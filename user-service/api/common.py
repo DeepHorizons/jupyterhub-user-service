@@ -2,14 +2,29 @@ import functools
 import os
 import urllib
 import urllib.parse
+import inspect
 import aiohttp
 from aiohttp import web
 
 
 class BaseView(web.View):
+    """
+    This view can get its own docstring for API documentation, and can authenticate with Jupyterhub for getting user
+    information.
+
+    To use, Create a docstring on the class describing what it does, methods supported, and what is expected.
+    A handler can be decorated like so:
+
+    @BaseView.authenticated()
+    async def get(self):
+        ...
+
+    This will make it so you need to have logged into Jupyterhub to get a cookie or you are using a token. If you want
+    to require admin, use `@BaseView.authenticated(admin=True)`, and to check for a particular group; `@BaseView.authenticated(group='adduser')`
+    """
     @classmethod
     def gen_docstring(cls):
-        return cls.__doc__
+        return inspect.getdoc(cls)
 
     async def _api_request(self, endpoint):
         async with aiohttp.ClientSession() as session:
