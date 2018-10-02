@@ -16,8 +16,9 @@ def create_app(argv=''):
     """
     app = web.Application()
     app['db'] = db
-    aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('./templates'))
-    app.add_routes([web.get('/', Index)])
+    template_path = os.path.join(os.path.dirname(__file__), 'templates')
+    aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader(template_path))
+    app.add_routes([web.get(prefix, Index)])
     app.add_subapp(prefix + 'api', apiapp)
     return app
 
