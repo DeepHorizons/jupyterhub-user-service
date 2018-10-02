@@ -40,7 +40,7 @@ class UserView(BaseView):
     @BaseView.authenticated(admin=True)
     async def post(self):
         request = self.request
-        user = request['jupyterhub-user']
+        jpy_user = request['jupyterhub-user']
         app = request.app
         db = self.request.config_dict['db']
 
@@ -49,12 +49,12 @@ class UserView(BaseView):
             return web.json_response({'msg': "No data found; is the Content-Type `application/json`?"}, status=400)
         body = {k: v for k, v in body.items() if v}  # Sanitize; we don't like empty strings
         app.logger.info("body: {}".format(str(body)))
-        user = dict_to_model(User, body)
+
         try:
             await db.create(User, **body)
         except peewee.IntegrityError as e:
             return web.json_response({'msg': "Error creating; {}".format(str(e))}, status=409)
-        app.logger.warning("User `{admin_user}` added user: `{body}`".format(admin_user=user['name'], body=str(body)))
+        app.logger.warning("User `{admin_user}` added user: `{body}`".format(admin_user=jpy_user['name'], body=str(body)))
 
         return web.json_response({}, status=204)
 
