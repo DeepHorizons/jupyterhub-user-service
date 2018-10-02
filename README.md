@@ -5,7 +5,7 @@ This repo contains a small web service that talks to a database to keep track of
 ## Building
 
 ```bash
-docker build -t jupyter-user-service .
+docker build -t jupyterhub-user-service .
 ```
 
 
@@ -18,7 +18,8 @@ docker run \
     -e DB_PASSWORD="user_password" \
     -e JUPYTERHUB_API_URL="https://jupyterhub/hub/api/" \
     -e JUPYTERHUB_API_TOKEN="12345" \
-    jupyter-user-service
+    -e PORT="10102" \
+    jupyterhub-user-service
 ```
 
 
