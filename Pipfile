@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+peewee-async = "==0.6.0a0"
+aiohttp = "*"
+peewee = "*"
+"aiohttp_jinja2" = "*"
+"jinja2" = "*"
+aiopg = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.6"
+
+[pipenv]
+allow_prereleases = true

@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- <link rel="icon" href="../../../../favicon.ico"> -->
+
+    <title>Juputerhub User Permission Admin Page</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link href="https://getbootstrap.com/docs/4.1/examples/starter-template/starter-template.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">Disabled</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
+              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+
+        <table class="table table-striped" id="usertable">
+        </table>
+
+        <table class="table table-striped" id="grouptable">
+        </table>
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addnewuser">
+          Add new user permission
+        </button>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addnewgroup">
+          Add new group permission
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="addnewuser" tabindex="-1" role="dialog" aria-labelledby="addnewusermodal" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="addnewusermodal">Add New User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form class="submit orm-signin type="submit" value="Send">
+                    <!-- The names on these elements must match the model names -->
+                  <input class="form-control" type="text" required name="username" placeholder="Username">
+                  <input class="form-control" type="text" name="nprocs" placeholder="# CPUs (can be left empty)">
+                  <input class="form-control" type="text" name="memory" placeholder="Memory (can be left empty)">
+                  <input class="form-control" type="text" name="runtime" placeholder="Runtime in hours (can be left empty)">
+                  GPU?<input class="form-check-input" type="checkbox" name="gpu" placeholder="Should they have a GPU?">
+                  <button class="btn btn-lg btn-primary btn-block" type="button" onclick="add_user(this.form)">Add User</button>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="addnewgroup" tabindex="-1" role="dialog" aria-labelledby="addnewgroupmodal" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="addnewgroupmodal">Add New Group</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form class="submit form-signin" type="submit" value="Send">
+                    <!-- The names on these elements must match the model names -->
+                  <input class="form-control" type="text" required name="groupname" placeholder="Group name">
+                  <input class="form-control" type="text" name="nprocs" placeholder="# CPUs (can be left empty)">
+                  <input class="form-control" type="text" name="memory" placeholder="Memory (can be left empty)">
+                  <input class="form-control" type="text" name="runtime" placeholder="Runtime in hours (can be left empty)">
+                  GPU?<input class="form-check-input" type="checkbox" name="gpu" placeholder="Should they have a GPU?">
+                  <button class="btn btn-lg btn-primary btn-block" onclick="add_group(this.form)">Add Group</button>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </main><!-- /.container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    
+    <script>
+        function handleErrors(response) {
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response;
+        }
+
+        function update_user_table() {
+            let table = document.getElementById('usertable');
+            table.innerHTML = ""; // TODO add loading image, need to remove it once we are done
+            let thead = document.createElement('thead')
+            table.appendChild(thead)
+            let thead_tr = document.createElement('tr')
+            thead.appendChild(thead_tr)
+            let th = document.createElement('th')
+            th.scope = "col"
+            th.innerHTML = "username"
+            thead_tr.appendChild(th)
+            var header_row = ["username"]
+
+            let tbody = document.createElement('tbody')
+            table.appendChild(thead)
+            table.appendChild(tbody)
+
+            fetch('/api/user'
+            ).then(response => {return response.json()}
+            ).then(json => {
+                // JSON data: {<username>: {<permissions name>: <value>}}
+                for (var username in json) {
+                    // Create a row
+                    let row = document.createElement('tr')
+
+                    let permissions = json[username]
+
+                    // First we add all possible permissions
+                    for (var permission_name in permissions) {
+                        // If the permission is not in thead, add it
+                        if (!header_row.includes(permission_name)) {
+                            let th = document.createElement('th')
+                            th.scope = "col"
+                            th.innerHTML = permission_name
+                            thead_tr.appendChild(th)
+
+                            header_row.push(permission_name)
+                        }
+                    }
+
+                    // Then for every permissions we add a value or leave it blank if we dont have it
+                    header_row.forEach(permission_name => {
+                        let td = document.createElement('td')
+
+                        if (permissions[permission_name] != undefined) {
+                            td.appendChild(document.createTextNode(permissions[permission_name]))
+                        } else {
+                            td.appendChild(document.createTextNode(""))
+                        }
+
+                        row.appendChild(td)
+                    })
+
+                    let delete_button = document.createElement('button')
+                    delete_button.className = "btn btn-danger"
+                    delete_button.innerHTML = "Delete"
+
+                    // TODO add modal
+                    delete_button.onclick = function() {console.log(this); delete_user(this)};
+
+                    delete_button.name = username
+                    row.appendChild(delete_button)
+
+                    // Where am I putting this?
+                    tbody.appendChild(row)
+                }
+            })
+        }
+
+        function update_group_table() {
+            let table = document.getElementById('grouptable');
+            table.innerHTML = ""; // TODO add loading image, need to remove it once we are done
+            let thead = document.createElement('thead')
+            table.appendChild(thead)
+            let thead_tr = document.createElement('tr')
+            thead.appendChild(thead_tr)
+            let th = document.createElement('th')
+            th.scope = "col"
+            th.innerHTML = "username"
+            thead_tr.appendChild(th)
+            var header_row = ["username"]
+
+            let tbody = document.createElement('tbody')
+            table.appendChild(thead)
+            table.appendChild(tbody)
+
+            fetch('/api/group'
+            ).then(response => {return response.json()}
+            ).then(json => {
+                // JSON data: {<username>: {<permissions name>: <value>}}
+                for (var username in json) {
+                    // Create a row
+                    let row = document.createElement('tr')
+
+                    let permissions = json[username]
+
+                    // First we add all possible permissions
+                    for (var permission_name in permissions) {
+                        // If the permission is not in thead, add it
+                        if (!header_row.includes(permission_name)) {
+                            let th = document.createElement('th')
+                            th.scope = "col"
+                            th.innerHTML = permission_name
+                            thead_tr.appendChild(th)
+
+                            header_row.push(permission_name)
+                        }
+                    }
+
+                    // Then for every permissions we add a value or leave it blank if we dont have it
+                    header_row.forEach(permission_name => {
+                        let td = document.createElement('td')
+
+                        if (permissions[permission_name] != undefined) {
+                            td.appendChild(document.createTextNode(permissions[permission_name]))
+                        } else {
+                            td.appendChild(document.createTextNode(""))
+                        }
+
+                        row.appendChild(td)
+                    })
+
+                    // Where am I putting this?
+                    tbody.appendChild(row)
+                }
+            })
+        }
+
+        update_user_table();
+        update_group_table();
+    </script>
+
+    <script>
+        function delete_user(t){
+            fetch('/api/user/' + t.name,
+                {
+                    method: "DELETE",
+            })
+            .then(response => {
+                if (response.ok) {
+                    update_user_table()
+                } else {
+                    // Figure out what happened
+                    console.log(`Response was not OK for deleting user: ${response}`)
+                }
+            })
+            .catch(error => {
+                console.log(`Problem deleting user '${t.name}': ${error}`)
+            })
+        }
+
+        function delete_group(t){
+            fetch('/api/group/' + t.name,
+                {
+                    method: "DELETE"
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Didnt expect a response
+                    update_group_table()
+                } else {
+                    // Figure out what happened
+                    console.log(`Response was not OK for deleting group: ${response}`)
+                }
+            })
+            .catch(error => {
+                console.log(`Problem deleting group '${t.name}': ${error}`)
+            })
+        }
+    </script>
+
+    <script>
+        function add_user(t){
+            console.log(t)
+            let body_object = {}
+            $(t).serializeArray().forEach(obj =>{
+                body_object[obj.name] = obj.value
+            })
+            fetch('/api/user',
+                {
+                    method: "POST",
+                    body: JSON.stringify( body_object ),
+                    headers:{
+                        'Content-Type': 'application/json'
+                    }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Didnt expect a response
+                    update_user_table()
+                } else {
+                    // Figure out what happened
+                    console.log(`Response was not OK for adding user`)
+                    console.log(response)
+                }
+                let userModal = document.getElementById('addnewuser')
+                userModal.click() // XXX This seems to close it for some reason...
+            })
+            .catch(error => {
+                console.log(`Problem adding user '${t.name}': ${error}`)
+            })
+        }
+
+        function add_group(t){
+            fetch('/api/group',
+                {
+                    method: "POST",
+                    body: JSON.stringify( $(t).serializeArray() ),
+                    headers:{
+                        'Content-Type': 'application/json'
+                    }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Didnt expect a response
+                    update_group_table()
+                } else {
+                    // Figure out what happened
+                    console.log(`Response was not OK for adding group: ${response.status}; ${response.statusText}`)
+                    console.log(response)
+                }
+
+                let groupModal = document.getElementById('addnewgroup')
+                groupModal.click() // XXX This seems to close it for some reason...
+            })
+            .catch(error => {
+                console.log(`Problem adding group '${t.name}': ${error}`)
+            })
+        }
+    </script>
+
+  </body>
+</html>
