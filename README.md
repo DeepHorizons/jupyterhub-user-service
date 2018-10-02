@@ -19,6 +19,7 @@ docker run \
     -e JUPYTERHUB_API_URL="https://jupyterhub/hub/api/" \
     -e JUPYTERHUB_API_TOKEN="12345" \
     -e PORT="10102" \
+    -e PROJECT_DIR="/srv/user-service" \
     jupyterhub-user-service
 ```
 

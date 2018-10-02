@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-pipenv install
-cd user-service
-pipenv run python app.py
+pip install --pre peewee-async aiohttp peewee aiohttp_jinja2 jinja2 aiopg
+cd $PROJECT_DIR
+python app.py
