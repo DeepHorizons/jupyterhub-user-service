@@ -154,7 +154,7 @@
             table.appendChild(thead)
             table.appendChild(tbody)
 
-            fetch('/api/user'
+            fetch(window.location.href + 'api/user'
             ).then(response => {return response.json()}
             ).then(json => {
                 // JSON data: {<username>: {<permissions name>: <value>}}
@@ -215,15 +215,15 @@
             thead.appendChild(thead_tr)
             let th = document.createElement('th')
             th.scope = "col"
-            th.innerHTML = "username"
+            th.innerHTML = "groupname"
             thead_tr.appendChild(th)
-            var header_row = ["username"]
+            var header_row = ["groupname"]
 
             let tbody = document.createElement('tbody')
             table.appendChild(thead)
             table.appendChild(tbody)
 
-            fetch('/api/group'
+            fetch(window.location.href + 'api/group'
             ).then(response => {return response.json()}
             ).then(json => {
                 // JSON data: {<username>: {<permissions name>: <value>}}
@@ -271,7 +271,7 @@
 
     <script>
         function delete_user(t){
-            fetch('/api/user/' + t.name,
+            fetch(window.location.href + 'api/user/' + t.name,
                 {
                     method: "DELETE",
             })
@@ -289,7 +289,7 @@
         }
 
         function delete_group(t){
-            fetch('/api/group/' + t.name,
+            fetch(window.location.href + 'api/group/' + t.name,
                 {
                     method: "DELETE"
             })
@@ -315,7 +315,7 @@
             $(t).serializeArray().forEach(obj =>{
                 body_object[obj.name] = obj.value
             })
-            fetch('/api/user',
+            fetch(window.location.href + 'api/user',
                 {
                     method: "POST",
                     body: JSON.stringify( body_object ),
@@ -341,7 +341,7 @@
         }
 
         function add_group(t){
-            fetch('/api/group',
+            fetch(window.location.href + 'api/group',
                 {
                     method: "POST",
                     body: JSON.stringify( $(t).serializeArray() ),
