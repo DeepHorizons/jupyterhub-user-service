@@ -24,4 +24,4 @@ def create_app(argv=''):
 
 if __name__ == '__main__':
     app = create_app()
-    web.run_app(app, port=os.environ.get('PORT', 8080))
+    web.run_app(app, port=int(os.environ.get('PORT', 8080)))

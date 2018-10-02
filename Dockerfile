@@ -5,8 +5,5 @@ RUN pip install pipenv
 
 ADD . $PROJECT_DIR/.
 
-RUN cd $PROJECT_DIR && \
-    pipenv install
-
 # TODO use gunicorn
-CMD cd $PROJECT_DIR/user-service && pipenv run python app.py
+CMD cd $PROJECT_DIR && run.sh
