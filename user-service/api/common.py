@@ -3,6 +3,7 @@ import os
 import urllib
 import urllib.parse
 import inspect
+import json
 import aiohttp
 from aiohttp import web
 
@@ -36,7 +37,10 @@ class BaseView(web.View):
             headers = {'Authorization': 'token %s' % JUPYTERHUB_API_TOKEN}
 
             async with session.get(url, headers=headers) as resp:
-                user = await resp.json()
+                body = await resp.text()
+                user = json.loads(body)
+                #self.request.app.logger.warning(body)
+                # user = await resp.json() Jupyterhub gave back text/html as the mimetype, it should be application/json
                 return user
 
     async def user_for_cookie(self, encrypted_cookie, use_cache=True, session_id=''):
@@ -72,12 +76,12 @@ class BaseView(web.View):
 
                 if user:
                     if admin and group:
-                        if (user['admin'] is True) and ('groups' in user) and (group in user['groups']):
+                        if ('admin' in user and user['admin'] is True) and ('groups' in user) and (group in user['groups']):
                             return await f(self, *args, **kwargs)
                         else:
                             raise web.HTTPUnauthorized(reason="Could not authenticate user, Not an administrator or not in group `{group}`".format(group=group))
                     elif admin:
-                        if user['admin'] is True:
+                        if ('admin' in user) and user['admin'] is True:
                             return await f(self, *args, **kwargs)
                         else:
                             raise web.HTTPUnauthorized(reason="Could not authenticate user, Not an administrator")
