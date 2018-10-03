@@ -109,7 +109,7 @@
                   <input class="form-control" type="text" name="memory" placeholder="Memory (can be left empty)">
                   <input class="form-control" type="text" name="runtime" placeholder="Runtime in hours (can be left empty)">
                   GPU?<input class="form-check-input" type="checkbox" name="gpu" placeholder="Should they have a GPU?">
-                  <button class="btn btn-lg btn-primary btn-block" onclick="add_group(this.form)">Add Group</button>
+                  <button class="btn btn-lg btn-primary btn-block" type="button" onclick="add_group(this.form)">Add Group</button>
                 </form>
               </div>
               <div class="modal-footer">
@@ -128,146 +128,6 @@
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
-    
-    <script>
-        function handleErrors(response) {
-            if (!response.ok) {
-                throw Error(response.statusText);
-            }
-            return response;
-        }
-
-        function update_user_table() {
-            let table = document.getElementById('usertable');
-            table.innerHTML = ""; // TODO add loading image, need to remove it once we are done
-            let thead = document.createElement('thead')
-            table.appendChild(thead)
-            let thead_tr = document.createElement('tr')
-            thead.appendChild(thead_tr)
-            let th = document.createElement('th')
-            th.scope = "col"
-            th.innerHTML = "username"
-            thead_tr.appendChild(th)
-            var header_row = ["username"]
-
-            let tbody = document.createElement('tbody')
-            table.appendChild(thead)
-            table.appendChild(tbody)
-
-            fetch(window.location.href + 'api/user'
-            ).then(response => {return response.json()}
-            ).then(json => {
-                // JSON data: {<username>: {<permissions name>: <value>}}
-                for (var username in json) {
-                    // Create a row
-                    let row = document.createElement('tr')
-
-                    let permissions = json[username]
-
-                    // First we add all possible permissions
-                    for (var permission_name in permissions) {
-                        // If the permission is not in thead, add it
-                        if (!header_row.includes(permission_name)) {
-                            let th = document.createElement('th')
-                            th.scope = "col"
-                            th.innerHTML = permission_name
-                            thead_tr.appendChild(th)
-
-                            header_row.push(permission_name)
-                        }
-                    }
-
-                    // Then for every permissions we add a value or leave it blank if we dont have it
-                    header_row.forEach(permission_name => {
-                        let td = document.createElement('td')
-
-                        if (permissions[permission_name] != undefined) {
-                            td.appendChild(document.createTextNode(permissions[permission_name]))
-                        } else {
-                            td.appendChild(document.createTextNode(""))
-                        }
-
-                        row.appendChild(td)
-                    })
-
-                    let delete_button = document.createElement('button')
-                    delete_button.className = "btn btn-danger"
-                    delete_button.innerHTML = "Delete"
-
-                    // TODO add modal
-                    delete_button.onclick = function() {console.log(this); delete_user(this)};
-
-                    delete_button.name = username
-                    row.appendChild(delete_button)
-
-                    // Where am I putting this?
-                    tbody.appendChild(row)
-                }
-            })
-        }
-
-        function update_group_table() {
-            let table = document.getElementById('grouptable');
-            table.innerHTML = ""; // TODO add loading image, need to remove it once we are done
-            let thead = document.createElement('thead')
-            table.appendChild(thead)
-            let thead_tr = document.createElement('tr')
-            thead.appendChild(thead_tr)
-            let th = document.createElement('th')
-            th.scope = "col"
-            th.innerHTML = "groupname"
-            thead_tr.appendChild(th)
-            var header_row = ["groupname"]
-
-            let tbody = document.createElement('tbody')
-            table.appendChild(thead)
-            table.appendChild(tbody)
-
-            fetch(window.location.href + 'api/group'
-            ).then(response => {return response.json()}
-            ).then(json => {
-                // JSON data: {<username>: {<permissions name>: <value>}}
-                for (var username in json) {
-                    // Create a row
-                    let row = document.createElement('tr')
-
-                    let permissions = json[username]
-
-                    // First we add all possible permissions
-                    for (var permission_name in permissions) {
-                        // If the permission is not in thead, add it
-                        if (!header_row.includes(permission_name)) {
-                            let th = document.createElement('th')
-                            th.scope = "col"
-                            th.innerHTML = permission_name
-                            thead_tr.appendChild(th)
-
-                            header_row.push(permission_name)
-                        }
-                    }
-
-                    // Then for every permissions we add a value or leave it blank if we dont have it
-                    header_row.forEach(permission_name => {
-                        let td = document.createElement('td')
-
-                        if (permissions[permission_name] != undefined) {
-                            td.appendChild(document.createTextNode(permissions[permission_name]))
-                        } else {
-                            td.appendChild(document.createTextNode(""))
-                        }
-
-                        row.appendChild(td)
-                    })
-
-                    // Where am I putting this?
-                    tbody.appendChild(row)
-                }
-            })
-        }
-
-        update_user_table();
-        update_group_table();
-    </script>
 
     <script>
         function delete_user(t){
@@ -280,7 +140,8 @@
                     update_user_table()
                 } else {
                     // Figure out what happened
-                    console.log(`Response was not OK for deleting user: ${response}`)
+                    console.log(`Response was not OK for deleting user`)
+                    console.log(response)
                 }
             })
             .catch(error => {
@@ -299,7 +160,8 @@
                     update_group_table()
                 } else {
                     // Figure out what happened
-                    console.log(`Response was not OK for deleting group: ${response}`)
+                    console.log(`Response was not OK for deleting group`)
+                    console.log(response)
                 }
             })
             .catch(error => {
@@ -341,10 +203,14 @@
         }
 
         function add_group(t){
+            let body_object = {}
+            $(t).serializeArray().forEach(obj =>{
+                body_object[obj.name] = obj.value
+            })
             fetch(window.location.href + 'api/group',
                 {
                     method: "POST",
-                    body: JSON.stringify( $(t).serializeArray() ),
+                    body: JSON.stringify( body_object ),
                     headers:{
                         'Content-Type': 'application/json'
                     }
@@ -367,6 +233,98 @@
             })
         }
     </script>
+
+    <script>
+        function handleErrors(response) {
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response;
+        }
+
+        // TODO do something better than start_value
+        function update_table(table_id, endpoint, start_value, delete_func) {
+            let table = document.getElementById(table_id);
+            table.innerHTML = ""; // TODO add loading image, need to remove it once we are done
+            let thead = document.createElement('thead')
+            table.appendChild(thead)
+            let thead_tr = document.createElement('tr')
+            thead.appendChild(thead_tr)
+            let th = document.createElement('th')
+            th.scope = "col"
+            th.innerHTML = start_value
+            thead_tr.appendChild(th)
+            var header_row = [start_value]
+
+            let tbody = document.createElement('tbody')
+            table.appendChild(thead)
+            table.appendChild(tbody)
+
+            fetch(endpoint
+            ).then(response => {return response.json()}
+            ).then(json => {
+                // JSON data: {<username>: {<permissions name>: <value>}}
+                for (var username in json) {
+                    // Create a row
+                    let row = document.createElement('tr')
+
+                    let permissions = json[username]
+
+                    // First we add all possible permissions
+                    for (var permission_name in permissions) {
+                        // If the permission is not in thead, add it
+                        if (!header_row.includes(permission_name)) {
+                            let th = document.createElement('th')
+                            th.scope = "col"
+                            th.innerHTML = permission_name
+                            thead_tr.appendChild(th)
+
+                            header_row.push(permission_name)
+                        }
+                    }
+
+                    // Then for every permissions we add a value or leave it blank if we dont have it
+                    header_row.forEach(permission_name => {
+                        let td = document.createElement('td')
+
+                        if (permissions[permission_name] != undefined) {
+                            td.appendChild(document.createTextNode(permissions[permission_name]))
+                        } else {
+                            td.appendChild(document.createTextNode(""))
+                        }
+
+                        row.appendChild(td)
+                    })
+
+                    let delete_button = document.createElement('button')
+                    delete_button.className = "btn btn-danger"
+                    delete_button.innerHTML = "Delete"
+
+                    // TODO add modal
+                    delete_button.onclick = function() {console.log(this); delete_func(this)};
+
+                    delete_button.name = username
+                    row.appendChild(delete_button)
+
+                    // Where am I putting this?
+                    tbody.appendChild(row)
+                }
+            })
+        }
+
+        function update_user_table() {
+            update_table('usertable', window.location.href + 'api/user', "username", delete_user)
+        }
+
+        function update_group_table() {
+            update_table('grouptable', window.location.href + 'api/group', "groupname", delete_group)
+        }
+
+        update_user_table();
+        update_group_table();
+    </script>
+
+
 
   </body>
 </html>
