@@ -33,12 +33,8 @@ class GroupView(BaseView):
     """
     async def get(self):
         db = self.request.config_dict['db']
-        groups = {}
         all_groups = await db.execute(Group.select())
-        for group in all_groups:
-            tmp = model_to_dict(group)
-            groups[group.groupname] = tmp
-        response = {'groups': groups}
+        response = {group.groupname: model_to_dict(group) for group in all_groups}
         return web.json_response(response)
 
     @BaseView.authenticated(admin=True)
@@ -48,15 +44,14 @@ class GroupView(BaseView):
         app = request.app
         db = self.request.config_dict['db']
 
-        body = request.get_json() or request.form
+        body = await request.json()
         if body is None:
             return web.json_response({'msg': "No data found; is the Content-Type `application/json`?"}, status=400)
         body = {k: v for k, v in body.items() if v}  # Sanitize; we don't like empty strings
         app.logger.info("body: {}".format(str(body)))
 
-        group = dict_to_model(Group, body)
         try:
-            await db.create(group)
+            await db.create(Group, **body)
         except peewee.IntegrityError as e:
             return web.json_response({'msg': "Error creating; {}".format(str(e))}, status=409)
 
@@ -107,10 +102,10 @@ class GetGroupView(BaseView):
             group = await db.get(Group, Group.groupname == groupname)
         except User.DoesNotExist:
             response = {'msg': "`{}` is not a valid group name".format(groupname)}
-            return web.json_response(response, status=404)
+            raise web.HTTPNotFound(content_type='application/json', text=json.dumps(response))
 
         await db.delete(group)
-        app.logger.warning("User `{admin_user}` deleted Group `{groupname}`}".format(admin_user=jpy_user['name'], groupname=str(groupname)))
+        app.logger.warning("User `{admin_user}` deleted Group `{groupname}`".format(admin_user=jpy_user['name'], groupname=str(groupname)))
         return web.json_response({}, status=204)
 
 
