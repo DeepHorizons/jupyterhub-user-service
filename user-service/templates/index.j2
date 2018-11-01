@@ -55,6 +55,9 @@
         <table class="table table-striped" id="grouptable">
         </table>
 
+        <table class="table table-striped" id="imagetable">
+        </table>
+
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addnewuser">
           Add new user permission
@@ -62,6 +65,11 @@
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addnewgroup">
           Add new group permission
+        </button>
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addnewimage">
+          Add new image
         </button>
 
         <!-- Modal -->
@@ -119,6 +127,31 @@
           </div>
         </div>
 
+        <!-- Modal -->
+        <div class="modal fade" id="addnewimage" tabindex="-1" role="dialog" aria-labelledby="addnewimagemodal" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="addnewimagemodal">Add New Group</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form class="submit form-signin" type="submit" value="Send">
+                    <!-- The names on these elements must match the model names -->
+                  <input class="form-control" type="text" name="display_name" placeholder="Display Name">
+                  <input class="form-control" type="text" required name="location" placeholder="/path/to/image">
+                  <button class="btn btn-lg btn-primary btn-block" type="button" onclick="add_image(this.form)">Add Image</button>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
     </main><!-- /.container -->
 
     <!-- Bootstrap core JavaScript
@@ -166,6 +199,26 @@
             })
             .catch(error => {
                 console.log(`Problem deleting group '${t.name}': ${error}`)
+            })
+        }
+
+        function delete_image(t){
+            fetch(window.location.href + 'api/image/' + t.name,
+                {
+                    method: "DELETE"
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Didnt expect a response
+                    update_image_table()
+                } else {
+                    // Figure out what happened
+                    console.log(`Response was not OK for deleting image`)
+                    console.log(response)
+                }
+            })
+            .catch(error => {
+                console.log(`Problem deleting image '${t.name}': ${error}`)
             })
         }
     </script>
@@ -230,6 +283,37 @@
             })
             .catch(error => {
                 console.log(`Problem adding group '${t.name}': ${error}`)
+            })
+        }
+
+        function add_image(t){
+            let body_object = {}
+            $(t).serializeArray().forEach(obj =>{
+                body_object[obj.name] = obj.value
+            })
+            fetch(window.location.href + 'api/image',
+                {
+                    method: "POST",
+                    body: JSON.stringify( body_object ),
+                    headers:{
+                        'Content-Type': 'application/json'
+                    }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Didnt expect a response
+                    update_image_table()
+                } else {
+                    // Figure out what happened
+                    console.log(`Response was not OK for adding image: ${response.status}; ${response.statusText}`)
+                    console.log(response)
+                }
+
+                let imageModal = document.getElementById('addnewimage')
+                imageModal.click() // XXX This seems to close it for some reason...
+            })
+            .catch(error => {
+                console.log(`Problem adding image '${t.name}': ${error}`)
             })
         }
     </script>
@@ -320,8 +404,13 @@
             update_table('grouptable', window.location.href + 'api/group', "groupname", delete_group)
         }
 
+        function update_image_table() {
+            update_table('imagetable', window.location.href + 'api/image', "location", delete_image)
+        }
+
         update_user_table();
         update_group_table();
+        update_image_table();
     </script>
 
 

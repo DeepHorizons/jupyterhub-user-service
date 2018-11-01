@@ -36,7 +36,14 @@ class Group(BaseModel):
     groupname = peewee.CharField(unique=True)
 
 
-database.create_tables([User, Group], safe=True)
+class Image(peewee.Model):
+    class Meta:
+        database = database
+    display_name = peewee.CharField(null=True)
+    location = peewee.CharField()
+
+
+database.create_tables([User, Group, Image], safe=True)
 database.close()
 objects = peewee_async.Manager(database)
 database.set_allow_sync(False)
